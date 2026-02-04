@@ -15,10 +15,10 @@ import (
 
 func checkForUpdates(db *database.Database, tg *telegram.Telegram) {
 
-	// 1. Scrapea los anuncios de la pàgina y guardalos en la db
+	// 1. Scrape the listings from the page and save them in the database
 	collectors.CollectHabitacliaEntries(db, 700)
 
-	// 2. Itera los anuncios que no se hayan enviado todavia al canal de telegram
+	// 2. Iterate through listings that haven't been sent to the Telegram channel yet
 	entries, _ := db.ListNotSent()
 	var err error
 	for _, entry := range entries {
@@ -31,10 +31,10 @@ func checkForUpdates(db *database.Database, tg *telegram.Telegram) {
 			log.Printf("Entry sent: %s\n", entry.Url)
 		}
 
-		// Marca el anuncio como enviado en la db
+		// Mark the listing as sent in the database
 		db.MarkAsSent(entry)
 
-		// Espera 3 segundos antes de enviar el siguiente anuncio
+		// Wait 3 seconds before sending the next listing
 		time.Sleep(3 * time.Second)
 	}
 }
